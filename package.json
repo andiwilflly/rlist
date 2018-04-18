@@ -1,6 +1,6 @@
 {
 	"name": "rlist",
-	"version": "1.0.0",
+	"version": "1.0.2",
 	"homepage": "https://github.com/andiwilflly/rlist",
 	"description": "Simple react mobx lazy load scroll for long lists",
 	"main": "index.js",
