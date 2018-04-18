@@ -1,0 +1,45 @@
+{
+	"name": "rlist",
+	"version": "1.0.0",
+	"homepage": "https://github.com/andiwilflly/rlist",
+	"description": "Simple react mobx lazy load scroll for long lists",
+	"main": "index.js",
+	"scripts": {
+		"compile": "webpack"
+	},
+	"_npmUser": {
+		"name": "andiwillfly",
+		"email": "andiwillfly@gmail.com"
+	},
+	"keywords": [
+		"rlist",
+		"mobx",
+		"scroll",
+		"simple",
+		"mobx scroll",
+		"react"
+	],
+	"license": "WTFPL",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/andiwilflly/rlist"
+	},
+	"peerDependencies": {
+		"react": "16.3.1",
+		"react-dom": "^16.3.1",
+		"mobx": "^4.1.1",
+		"mobx-react": "^5.0.0",
+		"prop-types": "^15.6.0"
+	},
+	"devDependencies": {
+		"babel-core": "6.26.0",
+		"babel-plugin-transform-decorators-legacy": "^1.3.4",
+		"babel-polyfill": "^6.26.0",
+		"babel-preset-es2015": "^6.24.1",
+		"babel-preset-react": "^6.24.1",
+		"path": "^0.12.7"
+	},
+	"dependencies": {
+		"webpack": "^3.8.1"
+	}
+}
