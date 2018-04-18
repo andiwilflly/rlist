@@ -9,7 +9,7 @@ class Test extends React.Component {
 	render () {
 		return (
 			<div>
-				Hello ditch
+				Hello ditch!!
 				<RList />
 			</div>
 		);
