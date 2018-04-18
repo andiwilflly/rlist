@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack:///./src/index.js"],"names":["module","exports","a"],"mappings":";;;;;;;;AAAAA,OAAOC,OAAP,GAAiB,EAAEC,GAAG,EAAL,EAAjB,C","file":"0.1f3083706c7178f5f65b.hot-update.js","sourcesContent":["module.exports = { a: 42 };\n\n\n// WEBPACK FOOTER //\n// ./src/index.js"],"sourceRoot":""}

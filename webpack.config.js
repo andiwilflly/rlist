@@ -16,31 +16,31 @@ module.exports = {
 		libraryTarget: 'umd'
 	},
 	externals: { // https://webpack.js.org/configuration/externals/#components/sidebar/sidebar.jsx
-		'react': {
-			root: 'React',
-			commonjs2: 'react',
-			commonjs: 'react',
-			amd: 'react'
-		},
-		'mobx': {
-			root: 'mobx',
-			commonjs2: 'mobx',
-			commonjs: 'mobx',
-			amd: 'mobx'
-		},
-		'mobx-react': {
-			root: 'mobx-react',
-			commonjs2: 'mobx-react',
-			commonjs: 'mobx-react',
-			amd: 'mobx-react'
-		},
-		'prop-types': {
-			root: 'prop-types',
-			commonjs2: 'prop-types',
-			commonjs: 'prop-types',
-			amd: 'prop-types'
-		},
-		'babel-polyfill' : 'babel-polyfill'
+		// 'react': {
+		// 	root: 'React',
+		// 	commonjs2: 'react',
+		// 	commonjs: 'react',
+		// 	amd: 'react'
+		// },
+		// 'mobx': {
+		// 	root: 'mobx',
+		// 	commonjs2: 'mobx',
+		// 	commonjs: 'mobx',
+		// 	amd: 'mobx'
+		// },
+		// 'mobx-react': {
+		// 	root: 'mobx-react',
+		// 	commonjs2: 'mobx-react',
+		// 	commonjs: 'mobx-react',
+		// 	amd: 'mobx-react'
+		// },
+		// 'prop-types': {
+		// 	root: 'prop-types',
+		// 	commonjs2: 'prop-types',
+		// 	commonjs: 'prop-types',
+		// 	amd: 'prop-types'
+		// },
+		// 'babel-polyfill' : 'babel-polyfill'
 	},
 	stats: {
 		colors: true,
@@ -80,7 +80,7 @@ module.exports = {
 		// 	exclude: [/\.min\.js$/gi] // skip pre-minified libs
 		// }),
 		new webpack.DefinePlugin({
-			'process.env.NODE_ENV': '"production"'
+			'process.env.NODE_ENV': '"development"'
 		})
 	]
 };
