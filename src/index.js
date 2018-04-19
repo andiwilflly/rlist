@@ -24,8 +24,7 @@ class Test extends React.Component {
 	render() {
 		return (
 			<div style={{ width: "50%", margin: '0 auto' }}>
-				<div style={{ height: 200 }}>test header</div>
-				Hello ditch
+				<div style={{ height: 100 }}>test header</div>
 				<RList>
 					{ this.times(100, (item, index)=> <div key={index} style={{
 						width: 200,

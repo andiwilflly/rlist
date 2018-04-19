@@ -29,7 +29,8 @@ class RList extends React.Component {
 		rListModel.update({
 			itemWidth:  this.itemRef.current.offsetWidth,
 			itemHeight: this.itemRef.current.offsetHeight,
-			listScrollTop: window.pageYOffset - this.containerRef.current.offsetTop
+			listScrollTop: window.pageYOffset - this.containerRef.current.offsetTop,
+			containerWidth: this.containerRef.current.offsetWidth
 		});
 
 		window.addEventListener('scroll', (event)=> {
@@ -41,34 +42,37 @@ class RList extends React.Component {
 		window.addEventListener('resize', (event)=> {
 			rListModel.update({
 				itemWidth:  this.itemRef.current.offsetWidth,
-				itemHeight: this.itemRef.current.offsetHeight
+				itemHeight: this.itemRef.current.offsetHeight,
+				containerWidth: this.containerRef.current.offsetWidth
 			});
 		});
 	}
 
 	@computed get rList() { return rListModel.rList; };
 
-	@computed get itemsInRow() { return Math.round(this.containerRef.current.offsetWidth / this.rList.itemWidth); };
+	@computed get itemsInRow() { return Math.floor(this.rList.containerWidth / this.rList.itemWidth); };
 
 	@computed get widthOfPart() { return this.itemsInRow * this.rList.itemWidth; };
 
 	@computed get rowsInPart() { return Math.floor(window.innerHeight / this.rList.itemHeight); };
 
-	@computed get itemsInPart() { return this.rowsInPart * this.itemsInRow; };
+	@computed get itemsInPart() {
+		let itemsInPart = this.rowsInPart * this.itemsInRow;
+		if(itemsInPart % 2) return itemsInPart;
+		if(!(itemsInPart % 2)) return itemsInPart + (this.itemsInRow - (itemsInPart % 2));
+	};
 
 	@computed get heightOfPart() { return this.rowsInPart * this.rList.itemHeight; };
 
+	@computed get partsCount() { return Math.ceil(this.items.length / this.itemsInPart) };
+
+	@computed get gameParts() { return this.chunk(this.items, this.itemsInPart); };
+
 	@computed get visibleCurrentPart() {
 		const visibleCurrentValue = Math.ceil(this.rList.listScrollTop / this.heightOfPart);
-		return visibleCurrentValue > 0 ? visibleCurrentValue : 1;
+		return visibleCurrentValue > 0 ? visibleCurrentValue : 0;
 	};
 
-	@computed get container() { return this.containerRef.current.getBoundingClientRect(); };
-
-
-	get partsCount() { return Math.ceil(this.items.length / this.itemsInPart) };
-
-	get gameParts() { return this.chunk(this.items, this.itemsInPart); };
 
 	get items() { return this.props.children.type ? [this.props.children] : this.props.children; };
 
@@ -90,28 +94,6 @@ class RList extends React.Component {
 		return this.isInRange(this.visibleCurrentPart, partNumber-1, partNumber+2);
 	}
 
-
-	renderFakeList() {
-		return (
-			<div className="r-list" style={{ opacity: 0, position: "absolute" }}>
-				<div ref={ this.itemRef }
-					 style={{ display: "inline-block" }}>
-					{ this.items[0] }
-				</div>
-			</div>
-		);
-	}
-
-
-	renderParts() {
-		return (
-			<div className="r-list-parts">
-				{ this.times(this.partsCount, (item, partNumber)=> {
-					return <div key={partNumber}>{ this.renderPart(partNumber) }</div>;
-				}) }
-			</div>
-		);
-	}
 	
 	
 	renderPart(partNumber) {
@@ -123,13 +105,23 @@ class RList extends React.Component {
 			:
 			console.log(`%c renderGamePart №, ${partNumber}`, "background: grey");
 
-
 		if(!this.isRenderPart(partNumber)) return this.renderPlaceholder();
-
 
 		return (
 			<div className={ `r-list-part-${partNumber}`}>
 				{ this.gameParts[partNumber].map((item, index)=> <RListItem key={index}>{ item }</RListItem>) }
+			</div>
+		);
+	}
+
+
+	renderParts() {
+		console.log("======= render =======");
+		return (
+			<div className="r-list-parts">
+				{ this.times(this.partsCount, (item, partNumber)=> {
+					return <div key={partNumber}>{ this.renderPart(partNumber) }</div>;
+				}) }
 			</div>
 		);
 	}
@@ -149,7 +141,6 @@ class RList extends React.Component {
 	render() {
 		if(!this.props.children) return <div className="r-list">empty</div>;
 
-		console.log("&nbsp;");
 		return (
 			<div>
 				{ this.containerRef.current ?
@@ -172,7 +163,12 @@ class RList extends React.Component {
 					{ this.containerRef.current ? this.renderParts() : null }
 				</div>
 
-				{ this.renderFakeList() }
+				<div className="r-list" style={{ opacity: 0, position: "absolute" }}>
+					<div ref={ this.itemRef }
+						 style={{ display: "inline-block" }}>
+						{ this.items[0] }
+					</div>
+				</div>
 			</div>
 		);
 	}

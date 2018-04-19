@@ -6,6 +6,7 @@ import { action, observable, runInAction } from 'mobx';
 class RListModel {
 
 	@observable rList = {
+		containerWidth: 0,
 		listScrollTop: 0,
 		itemWidth: 0,
 		itemHeight: 0
