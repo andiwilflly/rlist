@@ -1,11 +1,10 @@
 import React from 'react';
+import { PropTypes } from 'prop-types';
 // MobX
 import { computed, observable } from 'mobx';
 import { observer } from 'mobx-react';
 // Models
 import rListModel from "./rList.model";
-// Components
-import RListItem from "./RListItem.component";
 
 
 @observer
@@ -15,8 +14,17 @@ class RList extends React.Component {
 	static displayName = 'RList.component';
 
 	static propTypes = {
+		scrollable: PropTypes.bool,
+		height: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
 	};
 
+	static defaultProps = {
+		scrollable: false,
+		height: 'auto'
+	};
+
+
+	@observable containerWrapperRef = React.createRef();
 
 	@observable containerRef = React.createRef();
 
@@ -33,9 +41,10 @@ class RList extends React.Component {
 			containerWidth: this.containerRef.current.offsetWidth
 		});
 
-		window.addEventListener('scroll', (event)=> {
+		this.scrollContainer.addEventListener('scroll', (event)=> {
+			const scrollTop = event.target.scrollTop || window.pageYOffset;
 			rListModel.update({
-				listScrollTop: window.pageYOffset - this.containerRef.current.offsetTop
+				listScrollTop: scrollTop - this.containerRef.current.offsetTop
 			});
 		});
 
@@ -48,6 +57,9 @@ class RList extends React.Component {
 		});
 	}
 
+
+	@computed get scrollContainer() { return this.props.scrollable ? this.containerWrapperRef.current : window; };
+
 	@computed get rList() { return rListModel.rList; };
 
 	@computed get itemsInRow() { return Math.floor(this.rList.containerWidth / this.rList.itemWidth); };
@@ -56,8 +68,10 @@ class RList extends React.Component {
 
 	@computed get rowsInPart() { return Math.floor(window.innerHeight / this.rList.itemHeight); };
 
+	// TODO: Recheck this
 	@computed get itemsInPart() {
 		let itemsInPart = this.rowsInPart * this.itemsInRow;
+		return itemsInPart;
 		if(itemsInPart % 2) return itemsInPart;
 		if(!(itemsInPart % 2)) return itemsInPart + (this.itemsInRow - (itemsInPart % 2));
 	};
@@ -75,6 +89,8 @@ class RList extends React.Component {
 
 
 	get items() { return this.props.children.type ? [this.props.children] : this.props.children; };
+
+	get fakeItem() { return { ...this.items[0], ref: this.itemRef }; };
 
 
 	chunk(array, chunkSize) {
@@ -107,11 +123,7 @@ class RList extends React.Component {
 
 		if(!this.isRenderPart(partNumber)) return this.renderPlaceholder();
 
-		return (
-			<div className={ `r-list-part-${partNumber}`}>
-				{ this.gameParts[partNumber].map((item, index)=> <RListItem key={index}>{ item }</RListItem>) }
-			</div>
-		);
+		return this.gameParts[partNumber].map((item, index)=> item);
 	}
 
 
@@ -120,7 +132,7 @@ class RList extends React.Component {
 		return (
 			<div className="r-list-parts">
 				{ this.times(this.partsCount, (item, partNumber)=> {
-					return <div key={partNumber}>{ this.renderPart(partNumber) }</div>;
+					return this.renderPart(partNumber);
 				}) }
 			</div>
 		);
@@ -129,7 +141,7 @@ class RList extends React.Component {
 
 	renderPlaceholder() {
 		return (
-			<div style={{
+			<div className="r-list-placeholder" style={{
 				width: this.widthOfPart,
 				height: this.heightOfPart,
 				background: "red"
@@ -159,16 +171,26 @@ class RList extends React.Component {
 					</div>
 				: null }
 
-				<div className="r-list" ref={ this.containerRef }>
-					{ this.containerRef.current ? this.renderParts() : null }
-				</div>
-
-				<div className="r-list" style={{ opacity: 0, position: "absolute" }}>
-					<div ref={ this.itemRef }
-						 style={{ display: "inline-block" }}>
-						{ this.items[0] }
+				<div style={{
+						height: this.props.scrollable ? this.props.height : 'auto',
+						overflow: this.props.scrollable ? 'hidden' : 'auto'
+				}}>
+					<div ref={ this.containerWrapperRef }
+						 style={{
+							overflow: this.props.scrollable ? 'scroll' : 'auto',
+							height: this.props.scrollable ? '100%' : 'auto'
+					}}>
+						<div className="r-list" ref={ this.containerRef }>
+							{ this.containerRef.current ? this.renderParts() : null }
+						</div>
 					</div>
 				</div>
+
+				{ !this.containerRef.current ?
+				<div className="r-list" style={{ opacity: 0 }}>
+					{ this.fakeItem }
+				</div>
+				: null }
 			</div>
 		);
 	}

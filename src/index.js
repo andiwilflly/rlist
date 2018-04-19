@@ -25,14 +25,15 @@ class Test extends React.Component {
 		return (
 			<div style={{ width: "50%", margin: '0 auto' }}>
 				<div style={{ height: 100 }}>test header</div>
-				<RList>
-					{ this.times(100, (item, index)=> <div key={index} style={{
-						width: 200,
-						height: 100,
-						background: 'orange'
-					}}>{ index }
-					</div>) }
-				</RList>
+					<RList scrollable={ false } height={ 500 }>
+						{ this.times(100, (item, index)=> <div key={index} className="r-list-parts__item" style={{
+							display: 'inline-block',
+							width: `25%`,
+							height: 100,
+							background: 'orange'
+						}}>{ index }
+						</div>) }
+					</RList>
 			</div>
 		);
 	}
