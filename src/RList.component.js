@@ -28,7 +28,8 @@ class RList extends React.Component {
 
 		rListModel.update({
 			itemWidth:  this.itemRef.current.offsetWidth,
-			itemHeight: this.itemRef.current.offsetHeight
+			itemHeight: this.itemRef.current.offsetHeight,
+			listScrollTop: window.pageYOffset - this.containerRef.current.offsetTop
 		});
 
 		window.addEventListener('scroll', (event)=> {
@@ -62,6 +63,8 @@ class RList extends React.Component {
 		return visibleCurrentValue > 0 ? visibleCurrentValue : 1;
 	};
 
+	@computed get container() { return this.containerRef.current.getBoundingClientRect(); };
+
 
 	get partsCount() { return Math.ceil(this.items.length / this.itemsInPart) };
 
@@ -75,6 +78,9 @@ class RList extends React.Component {
 			return i % chunkSize ? [] : [array.slice(i, i + chunkSize)];
 		}));
 	}
+
+
+	times(times = 10, fn=()=>{}) { return Array.apply(null, new Array(times)).map(fn); };
 
 	isInRange(x, min, max) { return ((x-min)*(x-max) <= 0); };
 
@@ -100,8 +106,8 @@ class RList extends React.Component {
 	renderParts() {
 		return (
 			<div className="r-list-parts">
-				{ Array.apply(null, new Array(this.partsCount)).map((item, partNumber)=> {
-					return this.renderPart(partNumber);
+				{ this.times(this.partsCount, (item, partNumber)=> {
+					return <div key={partNumber}>{ this.renderPart(partNumber) }</div>;
 				}) }
 			</div>
 		);
@@ -109,11 +115,21 @@ class RList extends React.Component {
 	
 	
 	renderPart(partNumber) {
+		this.isRenderPart(partNumber) ?
+			this.visibleCurrentPart === partNumber ?
+				console.log(`%c renderGamePart №, ${partNumber}`, "background: lightblue")
+				:
+				console.log(`%c renderGamePart №, ${partNumber}`, "background: yellow")
+			:
+			console.log(`%c renderGamePart №, ${partNumber}`, "background: grey");
+
+
 		if(!this.isRenderPart(partNumber)) return this.renderPlaceholder();
+
 
 		return (
 			<div className={ `r-list-part-${partNumber}`}>
-				{ this.gameParts[partNumber].map((item, index)=> <RListItem>{ item }</RListItem>) }
+				{ this.gameParts[partNumber].map((item, index)=> <RListItem key={index}>{ item }</RListItem>) }
 			</div>
 		);
 	}
@@ -124,7 +140,7 @@ class RList extends React.Component {
 			<div style={{
 				width: this.widthOfPart,
 				height: this.heightOfPart,
-				background: "transparent"
+				background: "red"
 			}} />
 		);
 	}
@@ -133,17 +149,20 @@ class RList extends React.Component {
 	render() {
 		if(!this.props.children) return <div className="r-list">empty</div>;
 
+		console.log("&nbsp;");
 		return (
 			<div>
 				{ this.containerRef.current ?
 					<div style={{ position: "fixed", bottom: 5, zIndex: "1", right: 5, background: "lightgray", padding: 10 }}>
+						<p>window.pageYOffset: { window.pageYOffset }</p>
+						<p>listScrollTop: { this.rList.listScrollTop }</p>
 						<p>itemWidth: { this.rList.itemWidth }</p>
 						<p>itemHeight: { this.rList.itemHeight }</p>
 						<p>itemsInRow: { this.itemsInRow }</p>
 						<p>widthOfPart: { this.widthOfPart }</p>
+						<p>heightOfPart: { this.heightOfPart }</p>
 						<p>rowsInPart: { this.rowsInPart }</p>
 						<p>itemsInPart: { this.itemsInPart }</p>
-						<p>heightOfPart: { this.heightOfPart }</p>
 						<p>partsCount: { this.partsCount }</p>
 						<p>visibleCurrentPart: { this.visibleCurrentPart }</p>
 					</div>

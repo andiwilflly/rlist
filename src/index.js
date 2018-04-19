@@ -18,54 +18,21 @@ Object.defineProperty(Array.prototype, 'chunk', {
 
 class Test extends React.Component {
 
+	times(times = 10, fn=()=>{}) { return Array.apply(null, new Array(times)).map(fn); };
+
+
 	render() {
 		return (
-			<div>
+			<div style={{ width: "50%", margin: '0 auto' }}>
+				<div style={{ height: 200 }}>test header</div>
 				Hello ditch
 				<RList>
-					<div key="1" style={{
+					{ this.times(100, (item, index)=> <div key={index} style={{
 						width: 200,
 						height: 100,
-						background: 'orange',
-						border: '1px solid black'
-					}}>test1
-					</div>
-					<span key="2" style={{
-						background: 'orange',
-						border: '1px solid black'
-					}}>test2</span>
-					<span key="3" style={{
-						background: 'orange',
-						border: '1px solid black'
-					}}>test23</span>
-					<span key="4" style={{
-						background: 'orange',
-						border: '1px solid black'
-					}}>test4</span>
-					<span key="5" style={{
-						background: 'orange',
-						border: '1px solid black'
-					}}>test5</span>
-					<span key="6" style={{
-						background: 'orange',
-						border: '1px solid black'
-					}}>test6</span>
-					<span key="7" style={{
-						background: 'orange',
-						border: '1px solid black'
-					}}>test7</span>
-					<span key="8" style={{
-						background: 'orange',
-						border: '1px solid black'
-					}}>test8</span>
-					<span key="9" style={{
-						background: 'orange',
-						border: '1px solid black'
-					}}>test9</span>
-					<span key="10" style={{
-						background: 'orange',
-						border: '1px solid black'
-					}}>test2</span>
+						background: 'orange'
+					}}>{ index }
+					</div>) }
 				</RList>
 			</div>
 		);
